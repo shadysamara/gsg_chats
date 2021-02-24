@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1093276093924",
+    "project_id": "gsg-chat",
+    "storage_bucket": "gsg-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093276093924:android:2c757ef7e93c4488624bf1",
+        "android_client_info": {
+          "package_name": "com.example.chat_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093276093924-78fatkis0r523o8k347prn2bur2i4g9c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCPQDLa-fn0PtYPg49yzQqViOwxOsLhfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093276093924-78fatkis0r523o8k347prn2bur2i4g9c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
