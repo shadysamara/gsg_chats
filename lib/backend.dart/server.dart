@@ -1,6 +1,8 @@
 import 'package:chat_application/backend.dart/appGet.dart';
 import 'package:chat_application/models/MessageModel.dart';
 import 'package:chat_application/models/UserMode.dart';
+import 'package:chat_application/pages/register.dart';
+import 'package:chat_application/pages/users.dart';
 import 'package:chat_application/services/SPHelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +14,10 @@ String chatCollectionName = 'chats';
 String messageCollectionName = 'messages';
 String usersCollectionName = 'users';
 AppGet appGet = Get.find();
+
+splachMethods() {
+  getAlUsers();
+}
 
 saveUserInFirestore(UserModel userModel) async {
   firestore
@@ -77,10 +83,24 @@ signOut() async {
 }
 
 ///////////////////////////////////////////////////////
+getAlUsers() async {
+  QuerySnapshot querySnapshot =
+      await firestore.collection(usersCollectionName).get();
+  List<UserModel> usersModels =
+      querySnapshot.docs.map((e) => UserModel.fromJson(e.data())).toList();
+  appGet.users.value = usersModels
+      .where((element) => element.userId != appGet.userModel.userId)
+      .toList();
+}
+
+///////////////////////////////////////////////////////
 Future<String> createChat(List<String> usersIds) async {
-  DocumentReference documentReference =
-      await firestore.collection(chatCollectionName).add({'users': usersIds});
-  return documentReference.id;
+  String chatId = usersIds.reduce((value, element) => value + element);
+  await firestore
+      .collection(chatCollectionName)
+      .doc(chatId)
+      .set({'users': usersIds});
+  return chatId;
 }
 
 ///////////////////////////////////////////////////////
@@ -93,15 +113,25 @@ createMessage(MessageMode message) async {
 }
 
 ///////////////////////////////////////////////////////
-Future<QuerySnapshot> getAllChats() async {
+Future<List<Map<String, dynamic>>> getAllChats() async {
   String myId = appGet.userModel.userId;
- QuerySnapshot querySnapshot = await firestore.collection(chatCollectionName).where('users',arrayContains: myId).get();
-  return querySnapshot;
-
+  QuerySnapshot querySnapshot = await firestore
+      .collection(chatCollectionName)
+      .where('users', arrayContains: myId)
+      .get();
+  List<Map<String, dynamic>> chats =
+      querySnapshot.docs.map((e) => e.data()).toList();
+  return chats;
 }
+
 ///////////////////////////////////////////////////////
-Stream<QuerySnapshot> getChatMessages(String chatId)  {
- Stream<QuerySnapshot> stream = firestore.collection(chatCollectionName).doc(chatId).collection(messageCollectionName).orderBy('timeStamp').snapshots();
-return stream;
+Stream<QuerySnapshot> getChatMessages(String chatId) {
+  Stream<QuerySnapshot> stream = firestore
+      .collection(chatCollectionName)
+      .doc(chatId)
+      .collection(messageCollectionName)
+      .orderBy('timeStamp')
+      .snapshots();
+  return stream;
 }
 ///////////////////////////////////////////////////////
